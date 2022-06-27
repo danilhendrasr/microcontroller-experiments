@@ -1,79 +1,64 @@
 #include <Arduino.h>
 #include <analogWrite.h>
+#include "lib.h"
 
-#define T1 34
-#define T2 35
-#define LED 26
-#define Q1 32
-#define Q2 33
+#define UPPER_TEMP_BOUND 25
 
-#define BATAS_SUHU_ATAS 25
+float deg_heater1, deg_heater2;
 
-float cel, cel1, deg_c, deg_c1;
+struct HeaterTemps {
+  int heater1;
+  int heater2;
+} current_temps;
 
-void q1_on() {
-  analogWrite(Q1, 255);
+Q1 q1;
+Q2 q2;
+LED led;
+Heater heater1(34);
+Heater heater2(35);
+
+// Get the temperature of both heaters
+void poll_temp() {
+  current_temps.heater1 = heater1.get_degree();
+  current_temps.heater2 = heater2.get_degree();
 }
 
-void q1_off() {
-  analogWrite(Q1, 0);
-}
-
-void q2_on() {
-  analogWrite(Q2, 255);
-}
-
-void q2_off() {
-  analogWrite(Q2, 0);
-}
-
-void led_on() {
-  analogWrite(LED, 255);
-}
-
-void led_off() {
-  analogWrite(LED, 0);
-}
-
-void temp_check() {
-  deg_c = analogRead(T1) * 0.322265625;
-  cel = deg_c / 10;
-  deg_c1 = analogRead(T2) * 0.322265625;
-  cel1 = deg_c / 10;
-
+// Print the current temperature of both heaters to serial console.
+void print_temp() {
   Serial.print("Temperatureeee: ");
-  Serial.print(cel);
+  Serial.print(current_temps.heater1);
   Serial.print("°C");
   Serial.print("  ~   ");
-  Serial.print(cel1);
+  Serial.print(current_temps.heater2);
   Serial.println("°C");
 }
 
 void setup() {
   Serial.begin(115200);
   analogWriteFrequency(5000);
-  analogWriteResolution(LED, 10);
-  analogWriteResolution(Q1, 10);
-  analogWriteResolution(Q2, 10);
+  analogWriteResolution(led.pin, 10);
+  analogWriteResolution(q1.pin, 10);
+  analogWriteResolution(q2.pin, 10);
 }
 
 void loop() {
-  temp_check();
+  poll_temp();
+  print_temp();
 
-  if (cel > BATAS_SUHU_ATAS) {
-    q1_off();
-    led_on();
+  if (current_temps.heater1 > UPPER_TEMP_BOUND) {
+    q1.off();
+    led.on();
   } else {
-    q1_on();
-    led_off();
+    q1.on();
+    led.off();
   }
 
-  if (cel1 > BATAS_SUHU_ATAS) {
-    q2_off();
-    led_on();
+  if (current_temps.heater2 > UPPER_TEMP_BOUND) {
+    q2.off();
+    led.on();
   } else {
-    q2_on();
-    led_off();
+    q2.on();
+    led.off();
   }
 
   delay(100);
