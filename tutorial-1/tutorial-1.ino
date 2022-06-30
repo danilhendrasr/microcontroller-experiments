@@ -2,7 +2,7 @@
 #include <analogWrite.h>
 #include "lib.h"
 
-#define UPPER_TEMP_BOUND 25
+#define UPPER_TEMP_BOUND 35
 
 float deg_heater1, deg_heater2;
 

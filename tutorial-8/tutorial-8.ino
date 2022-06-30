@@ -39,79 +39,79 @@ int iwrite_led = 255;         // integer value for writing
 int iwrite_min = 0;           // integer value for writing
 
 void setup() {
-  // put your setup code here, to run once:
+    // put your setup code here, to run once:
 
-  ts = millis();
+    ts = millis();
 
-  Serial.begin(baud);
-  while (!Serial) {
-    ; // wait for serial port to connect.
-  }
+    Serial.begin(baud);
+    while (!Serial) {
+        ; // wait for serial port to connect.
+    }
 
-  // configure pinQ1 PWM functionalitites
-  ledcSetup(Q1Channel, freq, resolutionQ1Channel);
+    // configure pinQ1 PWM functionalitites
+    ledcSetup(Q1Channel, freq, resolutionQ1Channel);
 
-  // attach the channel to the pinQ1 to be controlled
-  ledcAttachPin(pinQ1, Q1Channel);
+    // attach the channel to the pinQ1 to be controlled
+    ledcAttachPin(pinQ1, Q1Channel);
 
-  // configure pinQ2 PWM functionalitites
-  ledcSetup(Q2Channel, freq, resolutionQ2Channel);
+    // configure pinQ2 PWM functionalitites
+    ledcSetup(Q2Channel, freq, resolutionQ2Channel);
 
-  // attach the channel to the pinQ2 to be controlled
-  ledcAttachPin(pinQ2, Q2Channel);
+    // attach the channel to the pinQ2 to be controlled
+    ledcAttachPin(pinQ2, Q2Channel);
 
-  // configure pinLED PWM functionalitites
-  ledcSetup(ledChannel, freq, resolutionLedChannel);
+    // configure pinLED PWM functionalitites
+    ledcSetup(ledChannel, freq, resolutionLedChannel);
 
-  // attach the channel to the pinLED to be controlled
-  ledcAttachPin(pinLED, ledChannel);
+    // attach the channel to the pinLED to be controlled
+    ledcAttachPin(pinLED, ledChannel);
 
-  ledcWrite(Q1Channel, 0);
-  ledcWrite(Q2Channel, 0);
-  ledcWrite(ledChannel, 0);
+    ledcWrite(Q1Channel, 0);
+    ledcWrite(Q2Channel, 0);
+    ledcWrite(ledChannel, 0);
 }
 
 void Q1on() {
-  ledcWrite(Q1Channel, iwrite_value);
-  //Serial.println(Q1);
+    ledcWrite(Q1Channel, iwrite_value);
+    //Serial.println(Q1);
 }
 
 void Q1off() {
-  ledcWrite(Q1Channel, iwrite_min);
-  //Serial.println(Q1);
+    ledcWrite(Q1Channel, iwrite_min);
+    //Serial.println(Q1);
 }
 
 void Q2on() {
-  ledcWrite(Q2Channel, iwrite_value);
-  //Serial.println(Q2);
+    ledcWrite(Q2Channel, iwrite_value);
+    //Serial.println(Q2);
 }
 
 void Q2off() {
-  ledcWrite(Q2Channel, iwrite_min);
-  //Serial.println(Q2);
+    ledcWrite(Q2Channel, iwrite_min);
+    //Serial.println(Q2);
 }
 
 void ledon() {
-  ledcWrite(ledChannel, iwrite_led);
+    ledcWrite(ledChannel, iwrite_led);
 }
 
 void ledoff() {
-  ledcWrite(ledChannel, iwrite_min);
+    ledcWrite(ledChannel, iwrite_min);
 }
 
 void cektemp() {
-  degC = analogRead(pinT1) * 0.322265625;    // use for 3.3v AREF
-  cel = degC / 10;
-  degC1 = analogRead(pinT2) * 0.322265625;    // use for 3.3v AREF
-  cel1 = degC1 / 10;
+    degC = analogRead(pinT1) * 0.322265625;    // use for 3.3v AREF
+    cel = degC / 10;
+    degC1 = analogRead(pinT2) * 0.322265625;    // use for 3.3v AREF
+    cel1 = degC1 / 10;
 
-  Serial.print("Temperature T1: ");
-  Serial.print(cel);   // print the temperature T1 in Celsius
-  Serial.print("Â°C");
-  Serial.print("  ~  "); // separator between Celsius and Fahrenheit
-  Serial.print("Temperature T2: ");
-  Serial.print(cel1);   // print the temperature T2 in Celsius
-  Serial.println("Â°C");
+    Serial.print("Temperature T1: ");
+    Serial.print(cel);   // print the temperature T1 in Celsius
+    Serial.print("°C");
+    Serial.print("  ~  "); // separator between Celsius and Fahrenheit
+    Serial.print("Temperature T2: ");
+    Serial.print(cel1);   // print the temperature T2 in Celsius
+    Serial.println("°C");
 }
 
 // PID Controller
@@ -128,66 +128,66 @@ void cektemp() {
 // D = derivative contribution
 
 float pid(float sp, float pv, float pv_last, float& ierr, float dt) {
-  float Kc = 10.0; // K / %Heater
-  float tauI = 50.0; // sec
-  float tauD = 1.0;  // sec
-  // PID coefficients
-  float KP = Kc;
-  float KI = Kc / tauI;
-  float KD = Kc * tauD;
-  // upper and lower bounds on heater level
-  float ophi = 100;
-  float oplo = 0;
-  // calculate the error
-  float error = sp - pv;
-  // calculate the integral error
-  ierr = ierr + KI * error * dt;
-  // calculate the measurement derivative
-  float dpv = (pv - pv_last) / dt;
-  // calculate the PID output
-  float P = KP * error; //proportional contribution
-  float I = ierr; //integral contribution
-  float D = -KD * dpv; //derivative contribution
-  float op = P + I + D;
-  // implement anti-reset windup
-  if ((op < oplo) || (op > ophi)) {
-    I = I - KI * error * dt;
-    // clip output
-    op = max(oplo, min(ophi, op));
-  }
-  ierr = I;
-  Serial.println("sp=" + String(sp) + " pv=" + String(pv) + " dt=" + String(dt) + " op=" + String(op) + " P=" + String(P) + " I=" + String(I) + " D=" + String(D));
-  return op;
+    float Kc = 10.0; // K / %Heater
+    float tauI = 50.0; // sec
+    float tauD = 1.0;  // sec
+    // PID coefficients
+    float KP = Kc;
+    float KI = Kc / tauI;
+    float KD = Kc * tauD;
+    // upper and lower bounds on heater level
+    float ophi = 100;
+    float oplo = 0;
+    // calculate the error
+    float error = sp - pv;
+    // calculate the integral error
+    ierr = ierr + KI * error * dt;
+    // calculate the measurement derivative
+    float dpv = (pv - pv_last) / dt;
+    // calculate the PID output
+    float P = KP * error; //proportional contribution
+    float I = ierr; //integral contribution
+    float D = -KD * dpv; //derivative contribution
+    float op = P + I + D;
+    // implement anti-reset windup
+    if ((op < oplo) || (op > ophi)) {
+        I = I - KI * error * dt;
+        // clip output
+        op = max(oplo, min(ophi, op));
+    }
+    ierr = I;
+    Serial.println("sp=" + String(sp) + " pv=" + String(pv) + " dt=" + String(dt) + " op=" + String(op) + " P=" + String(P) + " I=" + String(I) + " D=" + String(D));
+    return op;
 }
 
 void loop() {
-  new_ts = millis();
-  if (new_ts - ts > 1000) {
+    new_ts = millis();
+    if (new_ts - ts > 1000) {
 
-    // put your main code here, to run repeatedly:
-    cektemp();
-    if (cel > batas_suhu_atas) {
-      Q1off();
-      ledon();
-    } else {
-      Q1on();
-      ledoff();
+        // put your main code here, to run repeatedly:
+        cektemp();
+        if (cel > batas_suhu_atas) {
+            Q1off();
+            ledon();
+        } else {
+            Q1on();
+            ledoff();
+        }
+        if (cel1 > batas_suhu_atas) {
+            Q2off();
+            ledon();
+        } else {
+            Q2on();
+            ledoff();
+        }
+
+        pv = cel;   // Temperature T1
+        dt = (new_ts - ts) / 1000.0;
+        ts = new_ts;
+        op = pid(sp, pv, pv_last, ierr, dt);
+        ledcWrite(Q1Channel, op);
+        pv_last = pv;
+
+        delay(200);
     }
-    if (cel1 > batas_suhu_atas) {
-      Q2off();
-      ledon();
-    } else {
-      Q2on();
-      ledoff();
-    }
-
-    pv = cel;   // Temperature T1
-    dt = (new_ts - ts) / 1000.0;
-    ts = new_ts;
-    op = pid(sp, pv, pv_last, ierr, dt);
-    ledcWrite(Q1Channel, op);
-    pv_last = pv;
-
-    delay(200);
-  }
 }

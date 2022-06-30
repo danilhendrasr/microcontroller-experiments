@@ -2,7 +2,7 @@ class Heater {
 public:
   Heater(int pin);
   int get_pin();
-  int get_degree();
+  float get_degree();
 private:
   int pin;
 };

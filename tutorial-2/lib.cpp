@@ -7,13 +7,13 @@ int Heater::get_pin() {
   return this->pin;
 }
 
-int Heater::get_degree() {
-  int tmp = analogRead(this->pin) * 0.322265625;
+float Heater::get_degree() {
+  float tmp = analogRead(this->pin) * 0.322265625;
   return tmp / 10;
 }
 
 void Toggleable::on(int channel) {
-  ledcWrite(channel, 25);
+  ledcWrite(channel, 50);
 }
 
 void Toggleable::off(int channel) {
@@ -21,25 +21,25 @@ void Toggleable::off(int channel) {
 }
 
 void Q1::on() {
-  Toggleable::on(Q1::pin);
+  Toggleable::on(this->pin);
 }
 
 void Q1::off() {
-  Toggleable::off(Q1::pin);
+  Toggleable::off(this->pin);
 }
 
 void Q2::on() {
-  Toggleable::on(Q2::pin);
+  Toggleable::on(this->pin);
 }
 
 void Q2::off() {
-  Toggleable::off(Q2::pin);
+  Toggleable::off(this->pin);
 }
 
 void LED::on() {
-  Toggleable::on(LED::pin);
+  Toggleable::on(this->pin);
 }
 
 void LED::off() {
-  Toggleable::off(LED::pin);
+  Toggleable::off(this->pin);
 }

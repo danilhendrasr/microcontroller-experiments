@@ -15,8 +15,8 @@ Heater heater2(35);
 float deg_heater1, deg_heater2;
 
 struct HeaterTemps {
-  int heater1;
-  int heater2;
+  float heater1;
+  float heater2;
 } current_temps;
 
 void setup() {

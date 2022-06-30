@@ -2,6 +2,6 @@
     "sketch": "tutorial-2.ino",
     "output": "build",
     "port": "/dev/ttyACM0",
-    "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
+    "configuration": "FlashFreq=80,UploadSpeed=115200,DebugLevel=none",
     "board": "esp32:esp32:esp32doit-devkit-v1"
 }
